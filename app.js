@@ -24,7 +24,7 @@ function startEidLabSync() {
         console.log('should not sync labs..', syncLabs);
     }
 
-  },10000)
+  },60000)
 
   
 }
