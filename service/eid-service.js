@@ -2,8 +2,7 @@
 const connection = require("../connection/connnection");
 const config = require('../conf/config.json');
 const def = {
-  saveEidQueue: saveEidQueue,
-  testConnection:testConnection
+  saveEidQueue: saveEidQueue
 }
 
 function saveEidQueue(identifiersArray,lab) {
