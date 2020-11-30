@@ -30,11 +30,11 @@ function startEidLabSync() {
 }
 
 function sync(){
-  // only sync labs at 8pm
+  // only sync labs at 7pm
   const currentHour = moment().format('HH');
   console.log('Current hour..', currentHour);
   console.log('shouldSync', shouldSync);
-  if(parseInt(currentHour) === 20){
+  if(parseInt(currentHour) === 19){
       if(shouldSync === false){
            shouldSync = true;
            console.log('shouldSync2', shouldSync);
