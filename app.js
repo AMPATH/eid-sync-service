@@ -3,6 +3,8 @@ const moment = require("moment");
 
 let shouldSync = false;
 
+let syncScheduled = false;
+
 function startEidLabSync() {
 
   console.log("start eid lab sync ######################");
@@ -24,7 +26,24 @@ function startEidLabSync() {
         console.log('should not sync labs..', syncLabs);
     }
 
-  },60000)
+    const syncRtcPatients = determineScheduledPatientsSync();
+
+    if(syncRtcPatients){
+
+       console.log('syncRtcPatients', syncRtcPatients);
+       syncService.syncScheduledPatients()
+       .then((results) => {
+        return results.forEach((result) => {
+          console.table('result',[result,result.status]);
+          console.log("end scheduled patients queueing -------------------");
+        });
+      });
+
+    }else{
+      console.log('syncRtcPatients not true', syncRtcPatients);
+    }
+
+  },6000)
 
   
 }
@@ -34,7 +53,7 @@ function sync(){
   const currentHour = moment().format('HH');
   console.log('Current hour..', currentHour);
   console.log('shouldSync', shouldSync);
-  if(parseInt(currentHour) === 19){
+  if(parseInt(currentHour) === 20){
       if(shouldSync === false){
            shouldSync = true;
            console.log('shouldSync2', shouldSync);
@@ -47,5 +66,26 @@ function sync(){
     return false;
   }
 }
+
+function determineScheduledPatientsSync(){
+
+  const currentHour = moment().format('HH');
+  console.log('Current hour..', currentHour);
+
+  if(parseInt(currentHour) === 21){
+    if(syncScheduled === false){
+         console.log('syncVariable true');
+         syncScheduled = true;
+         return true;
+    }else{
+         return false;
+    }
+}else {
+  syncScheduled = false;
+  return false;
+}
+
+}
+
 
 startEidLabSync();

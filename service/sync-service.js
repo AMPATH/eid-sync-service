@@ -1,6 +1,7 @@
 const viralLoadService = require("../service/viral-load-service");
 const dnaPcrService = require("../service/dna-pcr-service");
 const cd4Service = require("../service/cd4-service");
+const appointmentService = require('../service/appointments-service');
 const moment = require("moment");
 
 const serviceDef = {
@@ -10,6 +11,7 @@ const serviceDef = {
   getTodaysAlupeDnaPcrResults: getTodaysAlupeDnaPcrResults,
   getTodaysAmpathCD4Results: getTodaysAmpathCD4Results,
   getTodaysEidLabResults: getTodaysEidLabResults,
+  syncScheduledPatients:syncScheduledPatients
 };
 
 function getTodaysAmpathViralLoads() {
@@ -97,6 +99,43 @@ function getTodaysAmpathCD4Results() {
   });
 }
 
+function syncAmpathScheduledPatients(){
+  const startDate = moment().add(1, 'day').endOf('day').format("YYYY-MM-DD");
+  const endDate = moment().add(1, 'day').endOf('day').format("YYYY-MM-DD");
+  return new Promise((resolve, reject) => {
+  appointmentService.syncScheduledPatients(startDate,endDate,'ampath')
+  .then((result) => {
+      console.log("syncAmpathScheduledPatients was successfull ..", result);
+      resolve(result);
+  })
+  .catch((error) => {
+    console.error('Failed to sync ampath scheduled patients...', error);
+    resolve(error);
+  });
+
+});
+
+}
+
+
+function syncAlupeScheduledPatients(){
+  const startDate = moment().add(1, 'day').endOf('day').format("YYYY-MM-DD");
+  const endDate = moment().add(1, 'day').endOf('day').format("YYYY-MM-DD");
+  return new Promise((resolve, reject) => {
+  appointmentService.syncScheduledPatients(startDate,endDate,'alupe')
+  .then((result) => {
+      console.log("syncAlupeScheduledPatients was successfull ..", result);
+      resolve(result);
+  })
+  .catch((error) => {
+    console.error('Failed to sync ampath scheduled patients...', error);
+    resolve(error);
+  });
+
+});
+
+}
+
 function getTodaysEidLabResults() {
   return Promise.allSettled([
     getTodaysAmpathViralLoads(),
@@ -105,6 +144,14 @@ function getTodaysEidLabResults() {
     getTodaysAlupeDnaPcrResults(),
     getTodaysAmpathCD4Results(),
   ]);
+}
+
+function syncScheduledPatients(){
+  return Promise.allSettled([
+    syncAmpathScheduledPatients(),
+    syncAlupeScheduledPatients()
+  ]);
+
 }
 
 module.exports = serviceDef;
