@@ -6,16 +6,23 @@ const def = {
   getEidQueueTable
 }
 
-function saveEidQueue(identifiersArray,lab) {
+function saveEidQueue(identifiersArray,orderNumbers,lab) {
   return new Promise((resolve, reject) => {
-    if(identifiersArray.length === 0){
+    if(identifiersArray.length === 0 && orderNumbers.length === 0){
       reject('No patient to syc');
     }else {
 
     const identifierString = getArrrayString(identifiersArray);
+    const ordersString = getArrrayString(orderNumbers);
     const queueTable = getEidQueueTable(lab);
+    let sql = '';
     console.log('QueueTable', queueTable);
-    const sql = `replace into etl.${queueTable}(SELECT distinct p.uuid FROM amrs.patient_identifier id join amrs.person p on (p.person_id = id.patient_id) where id.identifier in (${identifierString}));`;
+    if(orderNumbers.length > 0){
+      sql = `replace into etl.${queueTable}(SELECT  distinct p.uuid FROM amrs.orders o join amrs.person p on (p.person_id = o.patient_id) where o.order_number in (${ordersString}));`;
+    }else{
+      sql = `replace into etl.${queueTable}(SELECT distinct p.uuid FROM amrs.patient_identifier id join amrs.person p on (p.person_id = id.patient_id) where id.identifier in (${identifierString}));`;
+    }
+    
     console.log("sql", sql);
     connection
       .getConnectionPool()

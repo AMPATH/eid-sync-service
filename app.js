@@ -1,9 +1,11 @@
 const syncService = require("./service/sync-service");
+const eidMassSync = require('./service/eid-mass-sync-service');
 const moment = require("moment");
 
 let shouldSync = false;
 
 let syncScheduled = false;
+let count = 0;
 
 function startEidLabSync() {
 
@@ -53,7 +55,7 @@ function sync(){
   const currentHour = moment().format('HH');
   console.log('Current hour..', currentHour);
   console.log('shouldSync', shouldSync);
-  if(parseInt(currentHour) === 20){
+  if(parseInt(currentHour) == 20){
       if(shouldSync === false){
            shouldSync = true;
            console.log('shouldSync2', shouldSync);
@@ -88,4 +90,61 @@ function determineScheduledPatientsSync(){
 }
 
 
+function startMassSync(){
+  console.log('start mass sync #######################################');
+  
+   eidMassSync.getPatientFromQueue()
+   .then((queueResult) => {
+     console.log('getPatientFromQueueResult', queueResult);
+     const patientUuid = queueResult[0].person_uuid;
+     console.log('PatientUuid check', patientUuid);
+          eidMassSync.deletePatientFromEidLog(patientUuid)
+          .then((result) => {
+            console.log('deletePatientFromEidLogResult', result);
+                  eidMassSync.postUuidToEtlUrl(patientUuid)
+                  .then((result)=> {
+                    console.log('postUuidToEtlUrlResult', result);
+                    eidMassSync.deletePatientFromEidQueue(patientUuid)
+                    .then((result) => {
+                      console.log('deletePatientFromEidQueue result', result);
+                      count++;
+                      console.log('count', count);
+                      console.log('end mass sync #######################################');
+                      startMassSync();
+                    }).catch((error)=> {
+                      console.log('deletePatientFromEidQueuerError', error);
+                    });
+                  }).catch((error)=> {
+                    console.log('postUuidToEtlUrlResultError', error);
+                     eidMassSync.saveUuidToEidErrorQueue(patientUuid)
+                      .then((success) => {
+                         console.error('Saved to error queue',success);
+                         eidMassSync.deletePatientFromEidQueue(patientUuid)
+                            .then((result) => {
+                              console.log('deletePatientFromEidQueue result', result);
+                              count++;
+                              console.log('count', count);
+                              console.log('end mass sync #######################################');
+                              startMassSync();
+                            }).catch((error)=> {
+                              console.log('deletePatientFromEidQueuerError', error);
+                            });
+                          
+                      })
+                      .catch((error) => {
+                        console.log('saveUuidToEidErrorQueue', error);
+                      });
+                  });
+
+          }).catch((error) => {
+              console.log('deletePatientFromEidLogResultError', error);
+          });
+     
+   }).catch((error)=> {
+      console.log('getPatientFromQueueResulterror', error);
+   });
+}
+
+
 startEidLabSync();
+// startMassSync();

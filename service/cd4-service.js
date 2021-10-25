@@ -21,7 +21,7 @@ function getDispatchedCD4Results(lab,startDate,endDate) {
 
     }).catch((error) => {
       console.log('getDispatchedCD4Results .. failed', error);
-      reject('error');
+      reject(error);
     });
 
 });

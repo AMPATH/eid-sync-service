@@ -21,7 +21,7 @@ function getDispatchedDnaPcrResults(lab,startDate,endDate) {
 
     }).catch((error) => {
       console.log('getDispatchedDnaPcrResults .. failed', error);
-      reject('error');
+      reject(error);
     });
 
 });

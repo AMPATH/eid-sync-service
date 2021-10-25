@@ -142,7 +142,7 @@ function getTodaysEidLabResults() {
     getTodaysAlupeViralLoads(),
     getTodaysAmpathDnaPcrResults(),
     getTodaysAlupeDnaPcrResults(),
-    getTodaysAmpathCD4Results(),
+    getTodaysAmpathCD4Results()
   ]);
 }
 

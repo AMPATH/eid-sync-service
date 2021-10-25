@@ -16,12 +16,7 @@ function getAllResults(payload) {
     const labSystem = config.hivLabSystem[lab];
     const url = labSystem.serverUrl + "/api/function?page=" + payload.page;
     const apiKey = labSystem.apiKey;
-    const finalpayload = qs.stringify({
-      date_dispatched_start: payload.startDate,
-      date_dispatched_end: payload.endDate,
-      test: payload.test,
-      dispatched: payload.dispatched,
-    });
+    const finalpayload = getResultFinalPayload(payload);
 
     const configObj = {
       method: "post",
@@ -34,6 +29,8 @@ function getAllResults(payload) {
         "Content-Type": "application/x-www-form-urlencoded",
       },
     };
+
+    console.log('configObj', configObj);
 
     console.log("Final Payload", finalpayload);
 
@@ -48,6 +45,31 @@ function getAllResults(payload) {
   });
 }
 
+function getResultFinalPayload(payload){
+  let finalpayload;
+  if(payload.test === 3){
+    finalpayload = qs.stringify({
+      start_date: payload.startDate,
+      end_date: payload.endDate,
+      test: payload.test,
+      dispatched: payload.dispatched
+    });
+
+  }else{
+
+    finalpayload = qs.stringify({
+      date_dispatched_start: payload.startDate,
+      date_dispatched_end: payload.endDate,
+      test: payload.test,
+      dispatched: payload.dispatched
+    });
+
+  }
+
+  return finalpayload;
+
+}
+
 async function getAllResultsFromEid(
   lab,
   testType,
@@ -57,6 +79,7 @@ async function getAllResultsFromEid(
 ) {
   let pages = 1;
   let patientIdentifiers = [];
+  let orderNumbers = [];
   let payload = {
     page: 1,
     lab: lab,
@@ -74,10 +97,15 @@ async function getAllResultsFromEid(
         let results = result.data;
         if (results.length > 0) {
           results.forEach((result) => {
+           if(testType === 3){
+            orderNumbers.push(result.order_number);
+           }else{
             patientIdentifiers.push(result.patient);
+           }
           });
         }
         console.log("Results length ...", patientIdentifiers.length);
+        console.log("Orders length ...", orderNumbers.length);
         console.log("Pages ...", pages);
       })
       .catch((error) => {
@@ -91,7 +119,7 @@ async function getAllResultsFromEid(
 
   return new Promise((resolve, reject) => {
     eidService
-      .saveEidQueue(patientIdentifiers, lab)
+      .saveEidQueue(patientIdentifiers,orderNumbers, lab)
       .then((result) => {
         console.info("Successfully saved to sync queue..");
         resolve(true);
