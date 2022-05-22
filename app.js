@@ -6,6 +6,7 @@ let shouldSync = false;
 
 let syncScheduled = false;
 let count = 0;
+const syncTime = 20;
 
 function startEidLabSync() {
 
@@ -55,7 +56,7 @@ function sync(){
   const currentHour = moment().format('HH');
   console.log('Current hour..', currentHour);
   console.log('shouldSync', shouldSync);
-  if(parseInt(currentHour) == 20){
+  if(parseInt(currentHour) == syncTime){
       if(shouldSync === false){
            shouldSync = true;
            console.log('shouldSync2', shouldSync);
@@ -74,7 +75,7 @@ function determineScheduledPatientsSync(){
   const currentHour = moment().format('HH');
   console.log('Current hour..', currentHour);
 
-  if(parseInt(currentHour) === 21){
+  if(parseInt(currentHour) === 22){
     if(syncScheduled === false){
          console.log('syncVariable true');
          syncScheduled = true;

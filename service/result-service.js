@@ -47,12 +47,14 @@ function getAllResults(payload) {
 
 function getResultFinalPayload(payload){
   let finalpayload;
+  // const mflCodes = "15209";
   if(payload.test === 3){
     finalpayload = qs.stringify({
       start_date: payload.startDate,
       end_date: payload.endDate,
       test: payload.test,
-      dispatched: payload.dispatched
+      dispatched: payload.dispatched,
+      // facility_code : mflCodes
     });
 
   }else{
@@ -61,7 +63,8 @@ function getResultFinalPayload(payload){
       date_dispatched_start: payload.startDate,
       date_dispatched_end: payload.endDate,
       test: payload.test,
-      dispatched: payload.dispatched
+      dispatched: payload.dispatched,
+      // facility_code : mflCodes
     });
 
   }

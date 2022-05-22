@@ -3,6 +3,8 @@ const dnaPcrService = require("../service/dna-pcr-service");
 const cd4Service = require("../service/cd4-service");
 const appointmentService = require('../service/appointments-service');
 const moment = require("moment");
+const startDate = '2022-04-29';
+const endDate = '2022-05-22';
 
 const serviceDef = {
   getTodaysAmpathViralLoads: getTodaysAmpathViralLoads,
@@ -16,8 +18,6 @@ const serviceDef = {
 
 function getTodaysAmpathViralLoads() {
   return new Promise((resolve, reject) => {
-    const startDate = moment().format("YYYY-MM-DD");
-    const endDate = moment().format("YYYY-MM-DD");
     viralLoadService
       .getDispatchedVlResults("ampath", startDate, endDate)
       .then((result) => {
@@ -33,8 +33,6 @@ function getTodaysAmpathViralLoads() {
 
 function getTodaysAlupeViralLoads() {
   return new Promise((resolve, reject) => {
-    const startDate = moment().format("YYYY-MM-DD");
-    const endDate = moment().format("YYYY-MM-DD");
     viralLoadService
       .getDispatchedVlResults("alupe", startDate, endDate)
       .then((result) => {
@@ -50,8 +48,6 @@ function getTodaysAlupeViralLoads() {
 
 function getTodaysAmpathDnaPcrResults() {
   return new Promise((resolve, reject) => {
-    const startDate = moment().format("YYYY-MM-DD");
-    const endDate = moment().format("YYYY-MM-DD");
     dnaPcrService
       .getDispatchedDnaPcrResults("ampath", startDate, endDate)
       .then((result) => {
@@ -67,8 +63,6 @@ function getTodaysAmpathDnaPcrResults() {
 
 function getTodaysAlupeDnaPcrResults() {
   return new Promise((resolve, reject) => {
-    const startDate = moment().format("YYYY-MM-DD");
-    const endDate = moment().format("YYYY-MM-DD");
     dnaPcrService
       .getDispatchedDnaPcrResults("alupe", startDate, endDate)
       .then((result) => {
@@ -84,8 +78,6 @@ function getTodaysAlupeDnaPcrResults() {
 
 function getTodaysAmpathCD4Results() {
   return new Promise((resolve, reject) => {
-    const startDate = moment().format("YYYY-MM-DD");
-    const endDate = moment().format("YYYY-MM-DD");
     cd4Service
       .getDispatchedCD4Results("ampath", startDate, endDate)
       .then((result) => {
