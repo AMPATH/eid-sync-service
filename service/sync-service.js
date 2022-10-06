@@ -3,8 +3,7 @@ const dnaPcrService = require("../service/dna-pcr-service");
 const cd4Service = require("../service/cd4-service");
 const appointmentService = require('../service/appointments-service');
 const moment = require("moment");
-const startDate = '2022-04-29';
-const endDate = '2022-05-22';
+
 
 const serviceDef = {
   getTodaysAmpathViralLoads: getTodaysAmpathViralLoads,
@@ -17,6 +16,8 @@ const serviceDef = {
 };
 
 function getTodaysAmpathViralLoads() {
+  const startDate = moment().subtract(1,'days').endOf('day').format('YYYY-MM-DD');
+  const endDate = moment().format('YYYY-MM-DD');
   return new Promise((resolve, reject) => {
     viralLoadService
       .getDispatchedVlResults("ampath", startDate, endDate)
@@ -32,6 +33,8 @@ function getTodaysAmpathViralLoads() {
 }
 
 function getTodaysAlupeViralLoads() {
+  const startDate = moment().subtract(1,'days').endOf('day').format('YYYY-MM-DD');
+  const endDate = moment().format('YYYY-MM-DD');
   return new Promise((resolve, reject) => {
     viralLoadService
       .getDispatchedVlResults("alupe", startDate, endDate)
@@ -47,6 +50,8 @@ function getTodaysAlupeViralLoads() {
 }
 
 function getTodaysAmpathDnaPcrResults() {
+  const startDate = moment().subtract(1,'days').endOf('day').format('YYYY-MM-DD');
+  const endDate = moment().format('YYYY-MM-DD');
   return new Promise((resolve, reject) => {
     dnaPcrService
       .getDispatchedDnaPcrResults("ampath", startDate, endDate)
@@ -62,6 +67,8 @@ function getTodaysAmpathDnaPcrResults() {
 }
 
 function getTodaysAlupeDnaPcrResults() {
+  const startDate = moment().subtract(1,'days').endOf('day').format('YYYY-MM-DD');
+  const endDate = moment().format('YYYY-MM-DD');
   return new Promise((resolve, reject) => {
     dnaPcrService
       .getDispatchedDnaPcrResults("alupe", startDate, endDate)
@@ -77,6 +84,8 @@ function getTodaysAlupeDnaPcrResults() {
 }
 
 function getTodaysAmpathCD4Results() {
+  const startDate = moment().subtract(1,'days').endOf('day').format('YYYY-MM-DD');
+  const endDate = moment().format('YYYY-MM-DD');
   return new Promise((resolve, reject) => {
     cd4Service
       .getDispatchedCD4Results("ampath", startDate, endDate)
@@ -92,7 +101,7 @@ function getTodaysAmpathCD4Results() {
 }
 
 function syncAmpathScheduledPatients(){
-  const startDate = moment().add(1, 'day').endOf('day').format("YYYY-MM-DD");
+  const startDate = moment().subtract(1,'days').endOf('day').format('YYYY-MM-DD');
   const endDate = moment().add(1, 'day').endOf('day').format("YYYY-MM-DD");
   return new Promise((resolve, reject) => {
   appointmentService.syncScheduledPatients(startDate,endDate,'ampath')
@@ -111,7 +120,7 @@ function syncAmpathScheduledPatients(){
 
 
 function syncAlupeScheduledPatients(){
-  const startDate = moment().add(1, 'day').endOf('day').format("YYYY-MM-DD");
+  const startDate = moment().subtract(1,'days').endOf('day').format('YYYY-MM-DD');
   const endDate = moment().add(1, 'day').endOf('day').format("YYYY-MM-DD");
   return new Promise((resolve, reject) => {
   appointmentService.syncScheduledPatients(startDate,endDate,'alupe')
